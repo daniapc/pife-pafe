@@ -3,6 +3,12 @@
 
 #include "cartas.h"
 
+//Faz ser jogado o modo de jogo solo
+void pifePafeSolo();
+
+//Faz ser jogado o modo de jogo contra o computador, dado o nível de dificuldade
+void pifePafeComputador();
+
 //Função para gerar um deck de baralho, no qual cada espaço armazena um ID de carta
 int* geraDeck(int tam);
 

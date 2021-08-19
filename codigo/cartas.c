@@ -50,7 +50,7 @@ void imprimePilhaCartas(Carta *vetorID, Pilha *p, int tam){
     int i;
 
     for (i = 0; i < tam; i++){
-        printf("[%c%c%c]", vetorID[paux->elem].numero_1, vetorID[paux->elem].underline,
+        printf("[%c%c%c] ", vetorID[paux->elem].numero_1, vetorID[paux->elem].underline,
                         vetorID[paux->elem].naipe);
         paux = paux->prox;
     }
