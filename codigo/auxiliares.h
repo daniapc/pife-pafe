@@ -19,6 +19,9 @@ int* copiaVetor(int *v, int tam);
 //Imprime um vetor genérico dado até qual índice de tamanho imprimir
 void imprimeVetor(int *v, int tam);
 
+//Função para ordenar três números dados
+void ordenaTresNumeros(int *n1, int *n2, int *n3);
+
 //Cria uma pilha atribuindo-lhe um valor inicial nulo
 Pilha* criarPilha();
 

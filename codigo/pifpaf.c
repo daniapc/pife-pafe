@@ -1,4 +1,4 @@
-#include "operacoes.c"
+#include "operacoes.h"
 
 int main (){
 
@@ -24,9 +24,6 @@ int main (){
     Pilha *cemiterio = criarPilha();
 
     Pilha *posicoes_definitivas = criarPilha(), *posicoes_temporarias = criarPilha();
-
-    //mao[0] = 18; mao[1] = 31; mao[2] = 32;  mao[3] = 33; mao[4] = 17;
-    //mao[5] = 4; mao[6] = 47; mao[7] = 51; mao[8] = 48;
 
     while (!venceu && decisao == 1){
 
@@ -59,19 +56,6 @@ int main (){
     else 
         printf("\nVocê perdeu!\n\n");
 
-
-  //  imprimeVetor(mao, copia_tamanho);
-
-    /*//Testes
-    imprimeVetor(deck, tamanho_deck);
-    imprimeVetor(mao, tamanho_mao);
-    descartaCarta(mao, &tamanho_mao, &cemiterio, 0);
-    imprimeVetor(mao, tamanho_mao);
-    imprimePilha(cemiterio);
-    */
-    //compraCarta(mao, &tamanho_mao, deck, &tamanho_deck);
-
-    //decartaCarta()
  
 /*
 [A_C]00 [2_C]01 [3_C]02 [4_C]03 [5_C]04 [6_C]05 [7_C]06 [8_C]07 [9_C]08 [10C]09 [V_C]10 [D_C]11 [R_C]12

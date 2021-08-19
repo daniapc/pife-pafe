@@ -1,5 +1,6 @@
-#include "cartas.c"
-#include "auxiliares.c"
+//#include "cartas.c"
+//#include "auxiliares.c"
+#include "operacoes.h"
 
 int* geraDeck(int tam){
     int* deck = (int*)malloc(tam*sizeof(int));

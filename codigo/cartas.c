@@ -44,7 +44,3 @@ void imprimeCartas(Carta *vetorID, int *deck, int tam){
     }
     printf("\n\n");
 }
-
-void imprimeCartasPilha(Carta *vetorID, int *deck, int tam){
-    
-}
