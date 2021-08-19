@@ -25,7 +25,7 @@ void embaralhaDeck(int *d, int tam){
     }
 }
 
-void compraCarta(int *m, int *tamM, int *d, int *tamD){
+void compraCartaDeck(int *m, int *tamM, int *d, int *tamD){
 
     //Inicialmente um vetor com tamanho da mão compra uma carta do topo do deck
     m[*tamM] = d[*tamD - 1];
@@ -35,14 +35,28 @@ void compraCarta(int *m, int *tamM, int *d, int *tamD){
     (*tamD)--;
 }
 
-void descartaCarta(int *m, int *tamM, Pilha **c, int indice){
-    int aux;
-    
+void compraCartaCemiterio(int *m, int *tamM, Pilha **c){
+
+    (*tamM)++;
+
+    m[*tamM -1] = topPilha(*c);
+
+    *c = popPilha(*c);
+}
+
+void descartaCarta(int *m, int *tamM, Pilha **c, int car){
+
+    int indice = 0;
+
+    while (m[indice] != car){
+        indice++;
+    }
+
     //Dada uma carta em um índice da mão, é descartada 
     trocarElementos(&m[indice], &m[*tamM - 1]);
 
     //O cemitério passado de referência é pushado com o elemento descartado.
-    *c = pushPilha(*c, aux);
+    *c = pushPilha(*c, m[*tamM - 1]);
 
     (*tamM)--;
 }
@@ -53,22 +67,22 @@ int* geraMao(int *d, int *tamD, int *tamM, int tamMMax){
     
     //Faz o ato de comprar cartas enquanto a mão não estiver cheia
     for (i = 0; i < tamMMax - 1; i++)
-        compraCarta(mao, tamM, d, tamD);
+        compraCartaDeck(mao, tamM, d, tamD);
 
     return mao;    
 }
 
 /*
 
-[1_C]00 [2_C]01 [3_C]02 [4_C]03 [5_C]04 [6_C]05 [7_C]06 [8_C]07 [9_C]08 [10C]09 [V_C]10 [D_C]11 [R_C]12
-[1_E]13 [2_E]14 [3_E]15 [4_E]16 [5_E]17 [6_E]18 [7_E]19 [8_E]20 [9_E]21 [10E]22 [V_E]23 [D_E]24 [R_E]25
-[1_O]26 [2_O]27 [3_O]28 [4_O]29 [5_O]30 [6_O]31 [7_O]32 [8_O]33 [9_O]34 [10O]35 [V_O]36 [D_O]37 [R_O]38
-[1_P]39 [2_P]40 [3_P]41 [4_P]42 [5_P]43 [6_P]44 [7_P]45 [8_P]46 [9_P]47 [10P]48 [V_P]49 [D_P]50 [R_P]51
+[A_C]00 [2_C]01 [3_C]02 [4_C]03 [5_C]04 [6_C]05 [7_C]06 [8_C]07 [9_C]08 [10C]09 [V_C]10 [D_C]11 [R_C]12
+[A_E]13 [2_E]14 [3_E]15 [4_E]16 [5_E]17 [6_E]18 [7_E]19 [8_E]20 [9_E]21 [10E]22 [V_E]23 [D_E]24 [R_E]25
+[A_O]26 [2_O]27 [3_O]28 [4_O]29 [5_O]30 [6_O]31 [7_O]32 [8_O]33 [9_O]34 [10O]35 [V_O]36 [D_O]37 [R_O]38
+[A_P]39 [2_P]40 [3_P]41 [4_P]42 [5_P]43 [6_P]44 [7_P]45 [8_P]46 [9_P]47 [10P]48 [V_P]49 [D_P]50 [R_P]51
 
 */
 
 int confereDupla(int id1, int id2){
-    //Se as cartas forem idênticas, impossível de fazer combinação.
+    //Se as cartas forem idênticas, imcarsível de fazer combinação.
     if (id1 != id2){
         //Caso forem de números iguais mas de naipes diferentes, é combinação.
         if (id1%13 == id2%13)
@@ -102,7 +116,7 @@ int confereTrinca(int id1, int id2, int id3){
     return 0;
 }
 
-void backtrackingTrinca(int *v, int tam, Pilha *postemp, Pilha **posdef ){
+void backtrackingTrinca(int *v, int tam, Pilha *cartemp, Pilha **cardef ){
 
     int i, j, k;
 
@@ -117,15 +131,15 @@ void backtrackingTrinca(int *v, int tam, Pilha *postemp, Pilha **posdef ){
                         trocarElementos(&vaux[j], &vaux[tam-2]);
                         trocarElementos(&vaux[k], &vaux[tam-3]);
                         
-                        postemp = pushPilha(postemp, v[i]);
-                        postemp = pushPilha(postemp, v[j]);
-                        postemp = pushPilha(postemp, v[k]);
+                        cartemp = pushPilha(cartemp, v[i]);
+                        cartemp = pushPilha(cartemp, v[j]);
+                        cartemp = pushPilha(cartemp, v[k]);
 
-                        backtrackingTrinca(vaux, tam - 3, postemp, &*posdef);
+                        backtrackingTrinca(vaux, tam - 3, cartemp, &*cardef);
                         
-                        postemp = popPilha(postemp);
-                        postemp = popPilha(postemp);
-                        postemp = popPilha(postemp);
+                        cartemp = popPilha(cartemp);
+                        cartemp = popPilha(cartemp);
+                        cartemp = popPilha(cartemp);
 
                         free(vaux);
                     }
@@ -133,12 +147,12 @@ void backtrackingTrinca(int *v, int tam, Pilha *postemp, Pilha **posdef ){
             }
         }
     }
-    if (tamanhoPilha(postemp) > tamanhoPilha(*posdef)){
-        *posdef = copiaPilha(postemp);
+    if (tamanhoPilha(cartemp) > tamanhoPilha(*cardef)){
+        *cardef = copiaPilha(cartemp);
    }
 }
 
-void backtrackingDupla(int *v, int tam, Pilha *postemp, Pilha **posdef ){
+void backtrackingDupla(int *v, int tam, Pilha *cartemp, Pilha **cardef ){
 
     int i, j;
 
@@ -151,13 +165,13 @@ void backtrackingDupla(int *v, int tam, Pilha *postemp, Pilha **posdef ){
                         trocarElementos(&vaux[i], &vaux[tam-1]);
                         trocarElementos(&vaux[j], &vaux[tam-2]);
                         
-                        postemp = pushPilha(postemp, v[i]);
-                        postemp = pushPilha(postemp, v[j]);
+                        cartemp = pushPilha(cartemp, v[i]);
+                        cartemp = pushPilha(cartemp, v[j]);
 
-                        backtrackingDupla(vaux, tam - 2, postemp, &*posdef);
+                        backtrackingDupla(vaux, tam - 2, cartemp, &*cardef);
                         
-                        postemp = popPilha(postemp);
-                        postemp = popPilha(postemp);
+                        cartemp = popPilha(cartemp);
+                        cartemp = popPilha(cartemp);
 
                         free(vaux);
                     }
@@ -165,13 +179,15 @@ void backtrackingDupla(int *v, int tam, Pilha *postemp, Pilha **posdef ){
             }
         }
     }
-    if (tamanhoPilha(postemp) > tamanhoPilha(*posdef)){
-        *posdef = copiaPilha(postemp);
+    if (tamanhoPilha(cartemp) > tamanhoPilha(*cardef)){
+        *cardef = copiaPilha(cartemp);
     }
 }
 
 void reorganizaMao(int *v, int *tam, Pilha **p){
-    int i, j, tamp = tamanhoPilha(*p), aux;
+    int i = 0, j, tamp = tamanhoPilha(*p), aux;
+
+    /*
     for (j = 0; j < tamp; j++){
         aux = topPilha(*p);
         for (i = 0; i < *tam; i++){
@@ -183,4 +199,18 @@ void reorganizaMao(int *v, int *tam, Pilha **p){
             }
         }
     }
+   */
+
+    for (j = 0; j < tamp; j++){
+       aux = topPilha(*p);
+       i = 0;
+       while (v[i] != aux){
+           i++;
+       }
+       trocarElementos(&v[i], &v[*tam-1]);
+       (*tam)--;
+       *p = popPilha(*p);
+   }  
+   
+
 }

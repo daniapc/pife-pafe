@@ -48,6 +48,7 @@ void desalocarPilha(Pilha *p){
         p = p->prox;
         free(paux);
     }
+    p = NULL;
 }
 
 Pilha* pushPilha(Pilha *p, int elem){
@@ -86,6 +87,7 @@ void imprimePilha(Pilha *p){
 
 int tamanhoPilha(Pilha *p){
     Pilha *paux = p;
+    //printf(("\nAntes de bugar\n"));
     int i = 0;
     while (paux != NULL){
         i++;
@@ -95,7 +97,7 @@ int tamanhoPilha(Pilha *p){
 }
 
 Pilha* copiaPilha(Pilha* p){
-    Pilha *paux1 = p, *paux2;
+    Pilha *paux1 = p, *paux2 = criarPilha();
 
     while (paux1 != NULL){
         paux2 = pushPilha(paux2, paux1->elem);

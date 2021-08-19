@@ -20,4 +20,6 @@ Carta* geraVetorIDs();
 //Função que imprime cartas dado o deck com números e seus respectivos IDs
 void imprimeCartas(Carta *vetorID, int *deck, int tam);
 
+void imprimePilhaCartas(Carta *vetorID, Pilha *p, int tam);
+
 #endif

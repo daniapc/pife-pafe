@@ -4,6 +4,8 @@ int main (){
 
     srand(time(NULL));
 
+    //printf("Bem-vindo jogador");
+
     Carta *vetorID = geraVetorIDs();
     int tamanho_deck = TAMD, 
         tamanho_mao = 0, 
@@ -15,40 +17,107 @@ int main (){
 
     int *mao = geraMao(deck, &tamanho_deck, &tamanho_mao, tamanho_mao_max);
 
-    int copia_tamanho_mao;
+    int copia_tamanho_mao, descartaveis_anterior = 9, topo_cemiterio;
 
-    int venceu = 0;
-
-    int decisao = 1;
+    int venceu = 0, decisao = 1, indicadora, indice, rodada = 0;
 
     Pilha *cemiterio = criarPilha();
 
-    Pilha *posicoes_definitivas = criarPilha(), *posicoes_temporarias = criarPilha();
+    Pilha *cartas_definitivas = criarPilha(), *cartas_temporarias = criarPilha(),
+          *duplas = criarPilha(), *trincas = criarPilha();
+
 
     while (!venceu && decisao == 1){
+        rodada++;
 
-        imprimeVetor(mao, tamanho_mao);
+        indicadora = 1;
 
-        printf("Cartas na sua mão:\n");
+        printf("\n--------------RODADA %d---------------\n\n", rodada);
+        printf("Cartas na sua mão antes da compra:\n");
         imprimeCartas(vetorID, mao, tamanho_mao);
-        copia_tamanho_mao = tamanho_mao;
 
-        backtrackingTrinca(mao, copia_tamanho_mao, posicoes_temporarias, &posicoes_definitivas);
-        reorganizaMao(mao, &copia_tamanho_mao, &posicoes_definitivas);
+        if (!pilhaVazia(cemiterio)){
 
-        if (copia_tamanho_mao <= 1){
-            venceu = 1;
+            printf("Carta no topo do cemitério:\n");
+            imprimePilhaCartas(vetorID, cemiterio, 1);
+            topo_cemiterio = topPilha(cemiterio);
+
+            compraCartaCemiterio(mao, &tamanho_mao, &cemiterio);
+
+            copia_tamanho_mao = tamanho_mao;
+
+            backtrackingTrinca(mao, copia_tamanho_mao, cartas_temporarias, &cartas_definitivas);
+            trincas = copiaPilha(cartas_definitivas);
+            reorganizaMao(mao, &copia_tamanho_mao, &cartas_definitivas);
+
+            backtrackingDupla(mao, copia_tamanho_mao, cartas_temporarias, &cartas_definitivas);
+            duplas = copiaPilha(cartas_definitivas);
+            reorganizaMao(mao, &copia_tamanho_mao, &cartas_definitivas);
+
+            if (copia_tamanho_mao < descartaveis_anterior){
+                printf("Carta comprada do topo do cemitério.\n\n");
+                indicadora = 0;
+            }
+            else{
+                descartaCarta(mao, &tamanho_mao, &cemiterio, topo_cemiterio);
+                desalocarPilha(trincas);
+                desalocarPilha(duplas);
+            }
+        }
+        if (indicadora){
+
+            compraCartaDeck(mao, &tamanho_mao, deck, &tamanho_deck);
+
+            copia_tamanho_mao = tamanho_mao;
+
+            backtrackingTrinca(mao, copia_tamanho_mao, cartas_temporarias, &cartas_definitivas);
+            trincas = copiaPilha(cartas_definitivas);
+            reorganizaMao(mao, &copia_tamanho_mao, &cartas_definitivas);
+            
+            backtrackingDupla(mao, copia_tamanho_mao, cartas_temporarias, &cartas_definitivas);
+            duplas = copiaPilha(cartas_definitivas);
+            reorganizaMao(mao, &copia_tamanho_mao, &cartas_definitivas);
+
+            printf("Carta comprada do deck.\n\n");
+            printf("Cartas na sua mão após a compra:\n");
+            imprimeCartas(vetorID, mao, tamanho_mao);
+        }
+
+        if (!pilhaVazia(trincas)){
+            printf("Trincas formadas:\n");
+            imprimePilhaCartas(vetorID, trincas, tamanhoPilha(trincas));
+            if (tamanhoPilha(trincas) == 9){
+                venceu = 1;
+                break;
+            }
+        }
+        if (!pilhaVazia(duplas)){
+            printf("Duplas formadas\n");
+            imprimePilhaCartas(vetorID, duplas, tamanhoPilha(duplas));
+        }
+        printf("Cartas descartáveis na sua mão:\n");
+        imprimeCartas(vetorID, mao, copia_tamanho_mao);
+
+        printf("Como descartar?\n[1] Escolha\t [2] Aleatório\n");
+        scanf("%d", &decisao);
+
+        if (decisao == 1){
+            printf("Escolha qual carta (1 a primeira, 2 a segunda, e assim por diante):\n");
+            scanf("%d", &indice);
+            indice--;
         }
         else{
-            backtrackingDupla(mao, copia_tamanho_mao, posicoes_temporarias, &posicoes_definitivas);
-            reorganizaMao(mao, &copia_tamanho_mao, &posicoes_definitivas);
+            indice = rand()%copia_tamanho_mao;
         }
-
-        printf("Cartas descartáveis na sua mão:\n");
-        imprimeCartas(vetorID, mao, copia_tamanho_mao);     
+        descartaCarta(mao, &tamanho_mao, &cemiterio, mao[indice]);
 
         printf("Próxima rodada?\n[1] Sim\t [2] Não\n");   
         scanf("%d", &decisao);
+
+        desalocarPilha(trincas);
+        desalocarPilha(duplas);
+
+        descartaveis_anterior = copia_tamanho_mao;
     }
 
     if (venceu)

@@ -44,3 +44,16 @@ void imprimeCartas(Carta *vetorID, int *deck, int tam){
     }
     printf("\n\n");
 }
+
+void imprimePilhaCartas(Carta *vetorID, Pilha *p, int tam){
+    Pilha *paux = p;
+    int i;
+
+    for (i = 0; i < tam; i++){
+        printf("[%c%c%c]", vetorID[paux->elem].numero_1, vetorID[paux->elem].underline,
+                        vetorID[paux->elem].naipe);
+        paux = paux->prox;
+    }
+
+    printf("\n\n");
+}
