@@ -3,8 +3,11 @@
 * Aluno: Daniel Augusto Pires de Castro RA: 2240246 *
 ****************************************************/
 
+//"pifpaf" contém a main do jogo, bem como as funções referentes aos dois modos de jogo
+//disponíveis. Não coloquei tais funções em arquivos à parte pois são indissociáveis à essência do jogo 
+
+//Optei por deixar os protótipos das funções do jogo no operacoes.h
 #include "operacoes.h"
-//Optei por deixar os protótipos das funções do jogo no operacoes.h 
 
 int main (){
 
@@ -57,6 +60,7 @@ void pifePafeSolo(){
     //Controlam a mão
     int tamanho_mao = 0, copia_tamanho_mao;
     int *mao = geraMao(deck, &tamanho_deck, &tamanho_mao, tamanho_mao_max);
+    copia_tamanho_mao = tamanho_mao + 1;
 
     //Variáveis que controlam eventos do jogo
     int venceu = 0, decisao = 1, indicadora, indice, rodada = 0;
@@ -141,6 +145,10 @@ void pifePafeSolo(){
         //Para poder sair ou não
         printf("Próxima rodada?\n[1] Sim\t [2] Não\n");   
         scanf("%d", &decisao);
+
+        //Caso o deck não tenha mais cartas
+        if (tamanho_deck == 0)
+            decisao = 2;
     }
 
     //Caso o laço de repetição tenha sido quebrado de tal modo que o jogador tenha vencido ou não
@@ -424,6 +432,10 @@ void pifePafeComputador(){
         //Valores armazenados para conferir se vale a pena comprar a carta do topo do cemitério
         descartaveis_anterior = copia_tamanho_mao;
         descartaveis_anterior2 = copia_tamanho_mao2;
+
+        //Caso o deck não tenha mais cartas 
+        if (tamanho_deck == 0)
+            decisao = 2;
     }
 
     //Caso o laço de repetição tenha sido quebrado de tal modo que o jogador tenha vencido ou não

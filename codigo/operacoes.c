@@ -77,21 +77,6 @@ int* geraMao(int *d, int *tamD, int *tamM, int tamMMax){
     return mao;    
 }
 
-int confereDupla(int id1, int id2){
-    //Se as cartas forem idênticas, imcarsível de fazer combinação.
-    if (id1 != id2){
-        //Caso forem de números iguais mas de naipes diferentes, é combinação.
-        if (id1%13 == id2%13)
-            return 1;
-        //Caso forem de naipes iguais e estiverem 1 a 2 números de distância, é combinação.
-        else if (id1/13 == id2/13){
-            if (abs(id1%13 - id2%13) == 1 || abs(id1%13 - id2%13) == 2)
-                return 1;
-        }
-    }
-    return 0;
-}
-
 int confereTrinca(int id1, int id2, int id3){
     //Ja retorna falso caso duas das três cartas sejam idênticas
     if (id1 == id2 || id1 == id3 || id2 == id3){
@@ -112,6 +97,71 @@ int confereTrinca(int id1, int id2, int id3){
     return 0;
 }
 
+int confereDupla(int id1, int id2){
+    //Se as cartas forem idênticas, imcarsível de fazer combinação.
+    if (id1 != id2){
+        //Caso forem de números iguais mas de naipes diferentes, é combinação.
+        if (id1%13 == id2%13)
+            return 1;
+        //Caso forem de naipes iguais e estiverem 1 a 2 números de distância, é combinação.
+        else if (id1/13 == id2/13){
+            if (abs(id1%13 - id2%13) == 1 || abs(id1%13 - id2%13) == 2)
+                return 1;
+        }
+    }
+    return 0;
+}
+
+int trincaRepetida(int id1, int id2, int id3, Pilha *p){
+    //Cópias de ids para percorrer a pilha
+    int cid1, cid2, cid3;
+    Pilha *paux = p;
+
+    //Ordena temporariamente os ids conferidos
+    ordenaTresNumeros(&id1, &id2, &id3);
+
+    //Esse laço percorre toda a pilha (evitando ficar nulo) e copia valores
+    while (paux != NULL && tamanhoPilha(paux) >= 3){
+        cid1 = paux->elem;
+        paux = paux->prox;
+        cid2 = paux->elem;
+        paux = paux->prox;
+        cid3 = paux->elem;
+        paux = paux->prox;
+        
+        //Ordena e confere se são iguais, se forem quer dizer que é repetida e retornara verdadeiro
+        ordenaTresNumeros(&cid1, &cid2, &cid3);
+        if (cid1 == id1 && cid2 == id2 && cid3 == id3)
+            return 1;
+    }
+    return 0;
+}
+
+int duplaRepetida(int id1, int id2, Pilha *p){
+    //Cópias de ids para percorrer a pilha    
+    int cid1, cid2;
+    Pilha *paux = p;
+
+    //Ordena temporariamente de um jeito simples
+    if (id1 > id2)
+        trocarElementos(&id1, &id2);
+
+    //Esse laço percorre toda a pilha (evitando ficar nulo) e copia valores
+    while (paux != NULL && tamanhoPilha(paux) >= 2){
+        cid1 = paux->elem;
+        paux = paux->prox;
+        cid2 = paux->elem;
+        paux = paux->prox;
+
+        //Ordena e confere se são iguais, se forem quer dizer que é repetida e retornara verdadeiro
+        if (cid1 > cid2)
+            trocarElementos(&cid1, &cid2);
+        if (cid1 == id1 && cid2 == id2)
+            return 1;
+    }
+    return 0;
+}
+
 void backtrackingTrinca(int *v, int tam, Pilha *cartemp, Pilha **cardef ){
 
     int i, j, k;
@@ -123,7 +173,7 @@ void backtrackingTrinca(int *v, int tam, Pilha *cartemp, Pilha **cardef ){
             for (j = i + 1; j < tam; j++){
                 for (k = j + 1; k < tam; k++){
                     //Caso for favorável a combinação, já pode prosseguir para gerar recursão
-                    if (confereTrinca(v[i], v[j], v[k])){
+                    if (confereTrinca(v[i], v[j], v[k]) && !trincaRepetida(v[i], v[j], v[k], *cardef)){
                         //Criado vetor de cópia
                         int *vaux = copiaVetor(v, tam);
 
@@ -170,7 +220,7 @@ void backtrackingDupla(int *v, int tam, Pilha *cartemp, Pilha **cardef ){
         for (i = 0; i < tam; i++){
             for (j = i + 1; j < tam; j++){
                     //Caso for favorável a combinação, já pode prosseguir para gerar recursão
-                    if (confereDupla(v[i], v[j])){
+                    if (confereDupla(v[i], v[j]) && !duplaRepetida(v[i], v[j], *cardef)){
                         //Criado vetor de cópia
                         int *vaux = copiaVetor(v, tam);
                         

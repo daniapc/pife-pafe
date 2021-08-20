@@ -3,6 +3,9 @@
 * Aluno: Daniel Augusto Pires de Castro RA: 2240246 *
 ****************************************************/
 
+//"auxiliares" se refere a funções não específicas do jogo. Há algoritmos genéricos que podem ser
+//aplicados em qualquer outro código.
+
 #ifndef _AUXILIARES_H_
 #define _AUXILIARES_H_
 
