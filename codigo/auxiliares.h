@@ -1,3 +1,8 @@
+/****************************************************
+* Estrutura de Dados 1 - Trabalho Prático           * 
+* Aluno: Daniel Augusto Pires de Castro RA: 2240246 *
+****************************************************/
+
 #ifndef _AUXILIARES_H_
 #define _AUXILIARES_H_
 

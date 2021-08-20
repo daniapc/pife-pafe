@@ -1,13 +1,22 @@
+/****************************************************
+* Estrutura de Dados 1 - Trabalho Prático           * 
+* Aluno: Daniel Augusto Pires de Castro RA: 2240246 *
+****************************************************/
+
 #ifndef _OPERACOES_H_
 #define _OPERACOES_H_
 
 #include "cartas.h"
+
+/********************************Estão dentro da pipaf.c*************************************/
 
 //Faz ser jogado o modo de jogo solo
 void pifePafeSolo();
 
 //Faz ser jogado o modo de jogo contra o computador, dado o nível de dificuldade
 void pifePafeComputador();
+
+/********************************Estão dentro da pipaf.c**************************************/
 
 //Função para gerar um deck de baralho, no qual cada espaço armazena um ID de carta
 int* geraDeck(int tam);

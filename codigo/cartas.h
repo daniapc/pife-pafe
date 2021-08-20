@@ -1,3 +1,8 @@
+/****************************************************
+* Estrutura de Dados 1 - Trabalho Prático           * 
+* Aluno: Daniel Augusto Pires de Castro RA: 2240246 *
+****************************************************/
+
 #ifndef _CARTAS_H_
 #define _CARTAS_H_
 
@@ -17,9 +22,10 @@ typedef struct carta{
 //Função para associar cada carta a um ID numérico, facilitando o processo de identificação da carta especificada
 Carta* geraVetorIDs();
 
-//Função que imprime cartas dado o deck com números e seus respectivos IDs
+//Função que imprime cartas em um vetor dado o limite e o deck com números e seus respectivos IDs
 void imprimeCartas(Carta *vetorID, int *deck, int tam);
 
+//Função que imprime cartas em uma pilha dado o limite e o deck com números e seus respectivos IDs
 void imprimePilhaCartas(Carta *vetorID, Pilha *p, int tam);
 
 #endif

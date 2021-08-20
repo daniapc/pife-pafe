@@ -1,5 +1,8 @@
-//#include "cartas.c"
-//#include "auxiliares.c"
+/****************************************************
+* Estrutura de Dados 1 - Trabalho Prático           * 
+* Aluno: Daniel Augusto Pires de Castro RA: 2240246 *
+****************************************************/
+
 #include "operacoes.h"
 
 int* geraDeck(int tam){
@@ -8,9 +11,9 @@ int* geraDeck(int tam){
     //Preenche o vetor de tamanho 104 com números referentes ao índice do vetor de IDs
     for (i = 0; i < 52; i++){
         deck[i] = i;
-        deck[i+52] = i; //Em um baralho de pifpaf, repete-se uma vez o número de cartas
+        //Em um baralho de pifpaf, a mesma carta existe duas vezes, por isso é atribuído ao índice 52 à frente
+        deck[i+52] = i; 
     }
-
     return deck;
 }
 
@@ -37,10 +40,13 @@ void compraCartaDeck(int *m, int *tamM, int *d, int *tamD){
 
 void compraCartaCemiterio(int *m, int *tamM, Pilha **c){
 
+    //Tamanho da mão incrementado
     (*tamM)++;
 
+    //O índice do topo da mão recebe o topo do cemitério
     m[*tamM -1] = topPilha(*c);
 
+    //O cemitério remove o elemento da cabeça
     *c = popPilha(*c);
 }
 
@@ -48,9 +54,9 @@ void descartaCarta(int *m, int *tamM, Pilha **c, int car){
 
     int indice = 0;
 
-    while (m[indice] != car){
+    //Percorre os índices do vetor até encontrar a carta
+    while (m[indice] != car)
         indice++;
-    }
 
     //Dada uma carta em um índice da mão, é descartada 
     trocarElementos(&m[indice], &m[*tamM - 1]);
@@ -64,22 +70,12 @@ void descartaCarta(int *m, int *tamM, Pilha **c, int car){
 int* geraMao(int *d, int *tamD, int *tamM, int tamMMax){
     int *mao = (int*)malloc(tamMMax*sizeof(int));
     int i;
-    
     //Faz o ato de comprar cartas enquanto a mão não estiver cheia
     for (i = 0; i < tamMMax - 1; i++)
         compraCartaDeck(mao, tamM, d, tamD);
 
     return mao;    
 }
-
-/*
-
-[A_C]00 [2_C]01 [3_C]02 [4_C]03 [5_C]04 [6_C]05 [7_C]06 [8_C]07 [9_C]08 [10C]09 [V_C]10 [D_C]11 [R_C]12
-[A_E]13 [2_E]14 [3_E]15 [4_E]16 [5_E]17 [6_E]18 [7_E]19 [8_E]20 [9_E]21 [10E]22 [V_E]23 [D_E]24 [R_E]25
-[A_O]26 [2_O]27 [3_O]28 [4_O]29 [5_O]30 [6_O]31 [7_O]32 [8_O]33 [9_O]34 [10O]35 [V_O]36 [D_O]37 [R_O]38
-[A_P]39 [2_P]40 [3_P]41 [4_P]42 [5_P]43 [6_P]44 [7_P]45 [8_P]46 [9_P]47 [10P]48 [V_P]49 [D_P]50 [R_P]51
-
-*/
 
 int confereDupla(int id1, int id2){
     //Se as cartas forem idênticas, imcarsível de fazer combinação.
@@ -120,97 +116,107 @@ void backtrackingTrinca(int *v, int tam, Pilha *cartemp, Pilha **cardef ){
 
     int i, j, k;
 
+    //Enquanto ainda for possível encontrar combinações de trincas na pilha
     if (tam >= 3){
+        //Laços de repetição aninhados de tal modo a permitir combinações (aprendi com a Leyza <3)
         for (i = 0; i < tam; i++){
             for (j = i + 1; j < tam; j++){
                 for (k = j + 1; k < tam; k++){
+                    //Caso for favorável a combinação, já pode prosseguir para gerar recursão
                     if (confereTrinca(v[i], v[j], v[k])){
+                        //Criado vetor de cópia
                         int *vaux = copiaVetor(v, tam);
 
+                        //Os elementos favoráveis são colocados atrás na pilha
                         trocarElementos(&vaux[i], &vaux[tam-1]);
                         trocarElementos(&vaux[j], &vaux[tam-2]);
                         trocarElementos(&vaux[k], &vaux[tam-3]);
                         
+                        //A pilha de cartas temporárias pusha esses elementos favoráveis
                         cartemp = pushPilha(cartemp, v[i]);
                         cartemp = pushPilha(cartemp, v[j]);
                         cartemp = pushPilha(cartemp, v[k]);
 
+                        //Entra em uma recursão, dessa vez diminuindo o tamanho
+                        //passando o vetor auxiliar e a pilha temporária
                         backtrackingTrinca(vaux, tam - 3, cartemp, &*cardef);
                         
+                        //São tirados os elementos favoráveis para as próximas possibilidades de combinação
                         cartemp = popPilha(cartemp);
                         cartemp = popPilha(cartemp);
                         cartemp = popPilha(cartemp);
 
+                        //Desalocado para as próximas possilidades de combinação
                         free(vaux);
                     }
                 }
             }
         }
     }
-    if (tamanhoPilha(cartemp) > tamanhoPilha(*cardef)){
+    //Ao chegar no final da recursão, é conferido o tamanho dessa pilha temporária se ultrapassou
+    //o tamanho da pilha definitiva. Assim, é armazenada a melhor combinação possível
+    if (tamanhoPilha(cartemp) > tamanhoPilha(*cardef))
         *cardef = copiaPilha(cartemp);
-   }
+   
 }
 
 void backtrackingDupla(int *v, int tam, Pilha *cartemp, Pilha **cardef ){
 
     int i, j;
 
+    //Enquanto ainda for possível encontrar combinações de duplas na pilha
     if (tam > 2){
+        //Laços de repetição aninhados de tal modo a permitir combinações
         for (i = 0; i < tam; i++){
             for (j = i + 1; j < tam; j++){
+                    //Caso for favorável a combinação, já pode prosseguir para gerar recursão
                     if (confereDupla(v[i], v[j])){
+                        //Criado vetor de cópia
                         int *vaux = copiaVetor(v, tam);
                         
+                        //Os elementos favoráveis são colocados atrás na pilha
                         trocarElementos(&vaux[i], &vaux[tam-1]);
                         trocarElementos(&vaux[j], &vaux[tam-2]);
                         
+                        //A pilha de cartas temporárias pusha esses elementos favoráveis
                         cartemp = pushPilha(cartemp, v[i]);
                         cartemp = pushPilha(cartemp, v[j]);
 
+                        //Entra em uma recursão, dessa vez diminuindo o tamanho
+                        //passando o vetor auxiliar e a pilha temporária
                         backtrackingDupla(vaux, tam - 2, cartemp, &*cardef);
                         
+                        //São tirados os elementos favoráveis para as próximas possibilidades de combinação
                         cartemp = popPilha(cartemp);
                         cartemp = popPilha(cartemp);
 
+                        //Desalocado para as próximas possilidades de combinação
                         free(vaux);
                     }
                 
             }
         }
     }
-    if (tamanhoPilha(cartemp) > tamanhoPilha(*cardef)){
+
+    //Ao chegar no final da recursão, é conferido o tamanho dessa pilha temporária se ultrapassou
+    //o tamanho da pilha definitiva. Assim, é armazenada a melhor combinação possível
+    if (tamanhoPilha(cartemp) > tamanhoPilha(*cardef))
         *cardef = copiaPilha(cartemp);
-    }
 }
 
 void reorganizaMao(int *v, int *tam, Pilha **p){
     int i = 0, j, tamp = tamanhoPilha(*p), aux;
 
-    /*
     for (j = 0; j < tamp; j++){
         aux = topPilha(*p);
-        for (i = 0; i < *tam; i++){
-            if (aux == v[i]){
-                trocarElementos(&v[i], &v[*tam-1]);
-                (*tam)--;
-                *p = popPilha(*p);
-                break;
-            }
-        }
-    }
-   */
-
-    for (j = 0; j < tamp; j++){
-       aux = topPilha(*p);
-       i = 0;
-       while (v[i] != aux){
-           i++;
-       }
-       trocarElementos(&v[i], &v[*tam-1]);
-       (*tam)--;
-       *p = popPilha(*p);
-   }  
+        i = 0;
+        //Percorre índices do vetor até encontrar o elemento
+        while (v[i] != aux)
+            i++;
+        //Troca elementos para o final e dá pop no que não for mais necessário
+        trocarElementos(&v[i], &v[*tam-1]);
+        (*tam)--;
+        *p = popPilha(*p);
+    }  
    
-
 }
