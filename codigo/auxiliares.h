@@ -11,6 +11,9 @@ typedef struct pilha{
     int elem;
 }Pilha;
 
+//Limpar tela
+void limparTela();
+
 //Dados os endereços de memória de dois elementos, eles são trocados
 void trocarElementos(int *elem1, int *elem2);
 

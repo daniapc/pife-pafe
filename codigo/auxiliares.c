@@ -1,5 +1,9 @@
 #include "auxiliares.h"
 
+void limparTela(){
+    system("clear");
+}
+
 void trocarElementos(int *elem1, int *elem2){
     int aux = *elem1;
     *elem1 = *elem2;
