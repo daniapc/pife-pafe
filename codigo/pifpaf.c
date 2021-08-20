@@ -67,10 +67,12 @@ void pifePafeSolo(){
         copia_tamanho_mao = tamanho_mao;
 
         backtrackingTrinca(mao, copia_tamanho_mao, cartas_temporarias, &cartas_definitivas);
+        desalocarPilha(trincas);
         trincas = copiaPilha(cartas_definitivas);
         reorganizaMao(mao, &copia_tamanho_mao, &cartas_definitivas);
             
         backtrackingDupla(mao, copia_tamanho_mao, cartas_temporarias, &cartas_definitivas);
+        desalocarPilha(duplas);
         duplas = copiaPilha(cartas_definitivas);
         reorganizaMao(mao, &copia_tamanho_mao, &cartas_definitivas);
             
@@ -115,9 +117,6 @@ void pifePafeSolo(){
         printf("Próxima rodada?\n[1] Sim\t [2] Não\n");   
         scanf("%d", &decisao);
 
-        desalocarPilha(trincas);
-        desalocarPilha(duplas);
-
         descartaveis_anterior = copia_tamanho_mao;
     }
     if (venceu)
@@ -129,7 +128,8 @@ void pifePafeSolo(){
     free(deck); 
     free(mao); 
     desalocarPilha(cemiterio);
-    //Duplas e Trincas não precisam ser desalocadas aqui por já acontecer antes
+    desalocarPilha(trincas);
+    desalocarPilha(duplas);
 }
 
 void pifePafeComputador(){
@@ -174,7 +174,7 @@ void pifePafeComputador(){
     decisao = 1;
 
     while (!venceu && decisao == 1){
-       // limparTela();
+        limparTela();
         rodada++;
 
         printf("\n--------------RODADA %d---------------\n\n", rodada);
@@ -185,8 +185,6 @@ void pifePafeComputador(){
         if (computador_inicia){
             printf("Vez do computador de jogar.\n\n");
             
-            imprimeCartas(vetorID, mao2, tamanho_mao2);
-
             if (!pilhaVazia(cemiterio)){
 
                 topo_cemiterio = topPilha(cemiterio);
@@ -196,10 +194,12 @@ void pifePafeComputador(){
                 copia_tamanho_mao2 = tamanho_mao2;
 
                 backtrackingTrinca(mao2, copia_tamanho_mao2, cartas_temporarias, &cartas_definitivas);
+                desalocarPilha(trincas);
                 trincas = copiaPilha(cartas_definitivas);
                 reorganizaMao(mao2, &copia_tamanho_mao2, &cartas_definitivas);
 
                 backtrackingDupla(mao2, copia_tamanho_mao2, cartas_temporarias, &cartas_definitivas);
+                desalocarPilha(duplas);
                 duplas = copiaPilha(cartas_definitivas);
                 reorganizaMao(mao2, &copia_tamanho_mao2, &cartas_definitivas);
 
@@ -209,8 +209,6 @@ void pifePafeComputador(){
                 }
                 else{
                     descartaCarta(mao2, &tamanho_mao2, &cemiterio, topo_cemiterio);
-                    desalocarPilha(trincas);
-                    desalocarPilha(duplas);
                 }
             }
             if (indicadora){
@@ -218,10 +216,12 @@ void pifePafeComputador(){
                 copia_tamanho_mao2 = tamanho_mao2;
 
                 backtrackingTrinca(mao2, copia_tamanho_mao2, cartas_temporarias, &cartas_definitivas);
+                desalocarPilha(trincas);
                 trincas = copiaPilha(cartas_definitivas);
                 reorganizaMao(mao2, &copia_tamanho_mao2, &cartas_definitivas);
                 
                 backtrackingDupla(mao2, copia_tamanho_mao2, cartas_temporarias, &cartas_definitivas);
+                desalocarPilha(duplas);
                 duplas = copiaPilha(cartas_definitivas);
                 reorganizaMao(mao2, &copia_tamanho_mao2, &cartas_definitivas);
 
@@ -236,22 +236,8 @@ void pifePafeComputador(){
                 }
             }
 
-            if (!pilhaVazia(trincas)){
-                printf("Trincas formadas:\n");
-                imprimePilhaCartas(vetorID, trincas, tamanhoPilha(trincas));
-            }
-            
-            if (!pilhaVazia(duplas)){
-                printf("Duplas formadas\n");
-                imprimePilhaCartas(vetorID, duplas, tamanhoPilha(duplas));
-            }
-            printf("Cartas descartáveis na  mão do computador:\n");
-            imprimeCartas(vetorID, mao2, copia_tamanho_mao2);
-
             descartaCarta(mao2, &tamanho_mao2, &cemiterio, mao2[rand()%copia_tamanho_mao2]);
 
-            desalocarPilha(trincas);
-            desalocarPilha(duplas);
         }
 
         indicadora = 1;
@@ -276,10 +262,12 @@ void pifePafeComputador(){
                 copia_tamanho_mao = tamanho_mao;
 
                 backtrackingTrinca(mao, copia_tamanho_mao, cartas_temporarias, &cartas_definitivas);
+                desalocarPilha(trincas);
                 trincas = copiaPilha(cartas_definitivas);
                 reorganizaMao(mao, &copia_tamanho_mao, &cartas_definitivas);
 
                 backtrackingDupla(mao, copia_tamanho_mao, cartas_temporarias, &cartas_definitivas);
+                desalocarPilha(duplas);
                 duplas = copiaPilha(cartas_definitivas);
                 reorganizaMao(mao, &copia_tamanho_mao, &cartas_definitivas);
 
@@ -300,8 +288,6 @@ void pifePafeComputador(){
             }
             else if (dificuldade == 1){
                 descartaCarta(mao, &tamanho_mao, &cemiterio, topo_cemiterio);
-                desalocarPilha(trincas);
-                desalocarPilha(duplas);
             }
         }
         if (indicadora){
@@ -331,7 +317,6 @@ void pifePafeComputador(){
         if (!pilhaVazia(trincas)){
             numero_trincas = tamanhoPilha(trincas);
             if (numero_trincas == tamanho_mao_max- 1){
-            //if (tamanhoPilha(trincas) == tamanho_mao_max - 1){
                 venceu = 1;
                 break;
             }
@@ -369,8 +354,6 @@ void pifePafeComputador(){
         scanf("%d", &decisao);
 
         if (dificuldade == 1){
-            desalocarPilha(trincas);
-            desalocarPilha(duplas);
             descartaveis_anterior = copia_tamanho_mao;
             
         }
@@ -391,7 +374,7 @@ void pifePafeComputador(){
     free(mao); 
     free(mao2); 
     desalocarPilha(cemiterio);
-    
-    //Dupla não precisa ser desalocada por já ter sido antes
+    desalocarPilha(trincas);
+    desalocarPilha(duplas);
     
 }
